@@ -1,0 +1,22 @@
+# raw data (external / large)
+data/raw/
+
+# processed data (binary)
+data/processed/*.pdf
+
+# RStudio / local
+.Rproj.user/
+.Rhistory
+.RData
+
+# direnv
+.envrc
+
+# macOS
+.DS_Store
+
+# old migration leftovers
+data_ext_link*
+
+/.quarto/
+**/*.quarto_ipynb

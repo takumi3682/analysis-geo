@@ -1,0 +1,107 @@
+---
+title: "Boring_test"
+format: html
+editor: visual
+---
+
+# ボーリングデータXMLからのデータ抽出
+
+## サンプルデータからの抽出テスト
+
+国土地盤情報検索サイト KuniJiban　所載のデータを利用してデータの抽出の試行を行う。
+
+国土交通省 東北地方整備局 仙台河川国道事務所 が実施した、「増田地区交差点他設計業務」のデータを利用する。
+
+```{r}
+# 初期設定
+library(here)
+library(xml2)
+library(magrittr)
+
+# --- ディレクトリ設定 ---
+# ファイルがプロジェクト直下の "data/raw" にある場合の指定
+DATA_PATH_raw <- here("data", "raw")
+```
+
+ボーリング柱状図は以下の通り。
+
+[柱状図PDF（増田地区）を確認する](data/processed/sample_boring_masuda.pdf)
+
+はじめにXMLデータを読み込む。
+
+```{r}
+# ファイルの読み込み
+# xml2はShift-JISも自動で判別して読み込んでくれます
+doc <- read_xml(here(DATA_PATH_raw,  "sample_boring_masuda.xml"))
+
+# 1. 調査名を取得する（タグ名：調査名）
+project_name <- xml_find_first(doc, ".//調査名") %>% xml_text()
+print(paste("調査名:", project_name))
+```
+
+いくつか代表的なデータを抽出してみる。
+
+```{r}
+# 2. すべての岩石名をリストとして取得する（タグ名：岩石土区分_岩石土名）
+rocks <- xml_find_all(doc, ".//岩石土区分_岩石土名") %>% xml_text()
+print("出現する岩石:")
+print(rocks)
+
+# 3. 標高を取得して数値に変換する（タグ名：孔口標高）
+elevation <- xml_find_first(doc, ".//孔口標高") %>% xml_text() %>% as.numeric()
+print(paste("孔口標高:", elevation, "m"))
+
+# --- 応用：地層と下端深度を表形式にする ---
+library(dplyr)
+strata_table <- data.frame(
+  depth = xml_find_all(doc, ".//岩石土区分_下端深度") %>% xml_text() %>% as.numeric(),
+  rocks  = xml_find_all(doc, ".//岩石土区分_岩石土名") %>% xml_text()
+)
+print("地層構成表:")
+print(strata_table)
+```
+
+## タグの確認
+
+XMLファイルに含まれるタグを全て抽出してみる。
+
+```{r}
+# XML内の全ノード名（タグ名）を抽出して重複を除く
+all_tags <- doc %>% 
+  xml_find_all(".//*") %>% 
+  xml_name() %>% 
+  unique() %>% 
+  sort()
+
+# 一覧を表示
+print(all_tags)
+```
+
+タグを階層ごとに表示してみる。
+
+```{r}
+library(xml2)
+library(purrr)
+
+# 階層構造を再帰的に表示する関数
+display_structure <- function(node, level = 0) {
+  # 現在のノード名を取得
+  node_name <- xml_name(node)
+  
+  # インデントを付けて表示
+  cat(rep("  ", level), "- ", node_name, "\n", sep = "")
+  
+  # 子要素があれば、さらに深く潜る（ただし重複表示を避けるため最初の1つ目だけを代表とする）
+  children <- xml_children(node)
+  child_names <- unique(xml_name(children))
+  
+  walk(child_names, function(name) {
+    # 各タグの最初のサンプルだけを辿って構造を見せる
+    first_child <- xml_find_first(node, name)
+    display_structure(first_child, level + 1)
+  })
+}
+
+# 実行（docは読み込み済みのXMLデータ）
+display_structure(xml_root(doc))
+```
