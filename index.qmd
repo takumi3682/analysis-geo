@@ -1,8 +1,8 @@
 ---
-title: （ここにタイトル）
+title: "ボーリングデータXMLファイルからのデータ抽出および図化"
+
 ---
 
 ## 公開資料
 
-- [スライド（Reveal.js）](reports/.html)
-- [PDF](reports/.pdf)
+- [ファイル読み込み、タグの確認、簡易的な柱状図](reports/boring.html)
