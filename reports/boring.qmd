@@ -290,5 +290,80 @@ ggplot() +
   scale_y_reverse()
 ```
 
-```{}
+## 特定の岩の境界だけ水平線を引く。
+
+```{r}
+#| message: false
+#| warning: false
+
+# 1. 塗り分け用の色設定（土質名に合わせて調整）
+# 実際のデータに含まれる土質名に合わせて適宜追加してください
+
+soil_colors <- c(
+  # --- 礫・砂系（温色系で強固なイメージ） ---
+  "盛土（砂礫）"      = "#FFD700", # ゴールド（人工的な礫質土）
+  "砂礫"              = "#FFA500", # オレンジ（代表的な礫質土）
+  "礫混り粗砂"        = "#EEE8AA", # ペールゴールデンロッド（粗い砂）
+  "礫混り細砂"        = "#F0E68C", # カーキ（やや細かい砂）
+  "シルト混り細砂"    = "#D2B48C", # タン（シルトが混じり少し濁った砂）
+
+  # --- 粘土・シルト・有機物系（寒色・暗色系で軟弱なイメージ） ---
+  "有機物混り粘土"    = "#556B2F", # ダークオリーブ（有機物特有の暗緑色）
+  "礫混り粘土"        = "#B0C4DE", # ライトスチールブルー（粘土ベースに礫）
+  "シルト"            = "#C0C0C0",  # シルバー（標準的なシルト）
+
+  "表土" = "#E6E6E6",         # 薄いグレー
+  "シルト" = "#CCCCCC",       # グレー
+  "砂混り礫" = "#FFFACD",     # レモン色
+  "岩盤" = "#DEB887",         # 茶色（ビスク）
+  "風化岩" = "#F4A460"        # 砂礫風の色
+
+)
+
+# 2. 作図
+# 例：特定の土質名のリストに含まれるものだけ
+target_soils <- c("盛土（砂礫）", "砂礫")
+
+ggplot() +
+  # 地層の背景塗り分け (geom_rect)
+  # xmin/xmaxを0〜50にすることで、N値グラフの背景全体を塗る
+  geom_rect(data = strata_data, 
+            aes(xmin = 0, xmax = 50, ymin = upper, ymax = lower, fill = soil_name), 
+            alpha = 0.4) + # N値の線が見えるよう透明度を調整
+  
+  # 地質境界の水平線
+#  geom_hline(data = strata_data, aes(yintercept = lower), 
+#             color = "gray40", linetype = "solid", linewidth = 0.3) +
+
+
+  geom_hline(
+    data = strata_data %>% filter(soil_name %in% target_soils), 
+    aes(yintercept = lower),
+    color = "red"
+  ) +
+    
+  # 地層名ラベル（右端に配置）
+  geom_text(data = strata_data, aes(x = 49, y = midpoint, label = soil_name), 
+            family = "noto", hjust = 1, color = "black", size = 3, fontface = "bold") +
+  
+  # N値の折れ線（最前面に描画）
+  geom_path(data = n_profile, aes(x = n_value, y = depth), 
+            color = "darkblue", linewidth = 1) + 
+  geom_point(data = n_profile, aes(x = n_value, y = depth), 
+             color = "darkblue", size = 2) +    
+  
+  # 色の設定
+  scale_fill_manual(values = soil_colors) +
+  
+  # 軸と外観の設定
+  scale_y_reverse(expand = c(0, 0)) + # グラフの上下の余白をなくす
+  scale_x_continuous(limits = c(0, 50), position = "top") + # N値軸を上側に配置（柱状図の慣習）
+  labs(title = paste0("地質構成とN値プロファイル（",project_name,")"),
+       x = "N値", y = "深度 (m)", fill = "土質区分") +
+  theme_minimal(base_family = "noto") +
+  theme(
+    panel.grid.major.x = element_line(color = "white"),
+    panel.grid.minor = element_blank(),
+    legend.position = "right"
+  )
 ```
