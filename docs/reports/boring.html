@@ -123,8 +123,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ボーリング柱状図" id="toc-ボーリング柱状図" class="nav-link" data-scroll-target="#ボーリング柱状図">ボーリング柱状図</a></li>
   <li><a href="#データ抽出" id="toc-データ抽出" class="nav-link" data-scroll-target="#データ抽出">データ抽出</a></li>
   <li><a href="#タグの確認" id="toc-タグの確認" class="nav-link" data-scroll-target="#タグの確認">タグの確認</a></li>
+  <li><a href="#n値ー深度の図化" id="toc-n値ー深度の図化" class="nav-link" data-scroll-target="#n値ー深度の図化">N値ー深度の図化</a></li>
+  <li><a href="#応用編" id="toc-応用編" class="nav-link" data-scroll-target="#応用編">応用編</a></li>
   </ul></li>
-  <li><a href="#特定の岩の境界だけ水平線を引く" id="toc-特定の岩の境界だけ水平線を引く" class="nav-link" data-scroll-target="#特定の岩の境界だけ水平線を引く">特定の岩の境界だけ水平線を引く。</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="boring.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -482,6 +483,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     - フリー情報</code></pre>
 </div>
 </div>
+</section>
+<section id="n値ー深度の図化" class="level3">
+<h3 class="anchored" data-anchor-id="n値ー深度の図化">N値ー深度の図化</h3>
 <p>まずはシンプルなN値折れ線グラフを描いてみる。</p>
 <div class="cell">
 <details class="code-fold">
@@ -531,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>岩石土質境界を水平線として追加してみる。</p>
+<p>次に岩石土質境界を水平線として追加してみる。</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -651,7 +655,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>別バージョン</p>
+<p>背景色の別バージョン。</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -674,9 +678,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-</section>
-<section id="特定の岩の境界だけ水平線を引く" class="level2">
-<h2 class="anchored" data-anchor-id="特定の岩の境界だけ水平線を引く">特定の岩の境界だけ水平線を引く。</h2>
+<section id="応用編" class="level3">
+<h3 class="anchored" data-anchor-id="応用編">応用編</h3>
+<p>特定の岩の境界だけ水平線を引いてみる。 特定の土質名のリストに含まれるものの下端境界線だけを朱書きしてみる。 例として「盛土（砂礫）」と「砂礫」の下端を朱書きしてみる。</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -761,6 +765,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
